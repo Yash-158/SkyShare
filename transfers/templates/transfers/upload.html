@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File - Skyshare</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --background: #ffffff;
+            --foreground: #111827;
+            --muted: #6b7280;
+            --muted-background: #f3f4f6;
+            --border: #e5e7eb;
+            --radius: 0.5rem;
+            --error: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--muted-background);
+            color: var(--foreground);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--background);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 4rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo svg {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--foreground);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--muted-background);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 3rem 0;
+        }
+
+        .upload-container {
+            background-color: var(--background);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .upload-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtitle {
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            color: var(--primary);
+        }
+
+        .upload-text {
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            color: var(--muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-file {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-file:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-file svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-progress {
+            display: none;
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-title {
+            font-weight: 500;
+        }
+
+        .progress-percentage {
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            width: 100%;
+            background-color: var(--muted-background);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .file-list {
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .file-list-header {
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--muted-background);
+            border-radius: var(--radius);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-item-icon {
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+
+        .file-item-info {
+            flex: 1;
+        }
+
+        .file-item-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-item-size {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .file-item-status {
+            margin-left: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-success {
+            color: var(--success);
+        }
+
+        .status-error {
+            color: var(--error);
+        }
+
+        .share-code {
+            display: none;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--muted-background);
+            border-radius: var(--radius);
+        }
+
+        .share-code-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-code-subtitle {
+            color: var(--muted);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-display {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-info {
+            background-color: var(--muted-background);
+            border-radius: var(--radius);
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+        .upload-info-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .upload-info ul {
+            list-style-position: inside;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-info li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--foreground);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 1rem 0;
+            }
+
+            nav ul {
+                margin: 1rem 0;
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="{% url 'home' %}" class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Skyshare
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <div class="upload-container">
+                <div class="upload-header">
+                    <h1 class="upload-title">Upload Files</h1>
+                    <p class="upload-subtitle">Share your files securely with Skyshare</p>
+                </div>
+
+                <div id="upload-area" class="upload-area">
+                    <div class="upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3 class="upload-text">Drag & Drop Files Here</h3>
+                    <p class="upload-subtext">or click to browse your files</p>
+                    <button id="browse-btn" class="btn-file">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        Browse Files
+                    </button>
+                    <input type="file" id="file-input" class="file-input" multiple>
+                </div>
+
+                <div id="upload-progress" class="upload-progress">
+                    <div class="progress-header">
+                        <div class="progress-title">Uploading...</div>
+                        <div id="progress-percentage" class="progress-percentage">0%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div id="file-list" class="file-list">
+                    <h3 class="file-list-header">Uploaded Files</h3>
+                    <!-- File items will be added here dynamically -->
+                </div>
+
+                <div id="share-code" class="share-code">
+                    <h3 class="share-code-title">Your files are ready to share!</h3>
+                    <p class="share-code-subtitle">Share this 6-digit code with anyone you want to access your files</p>
+                    <div id="code-display" class="code-display">123456</div>
+                    <p>Recipients can download your files at <a
+                            href="{% url 'download_page' %}">skyshare.com/download</a></p>
+                </div>
+
+                <div class="upload-info">
+                    <h4 class="upload-info-title">Upload Information</h4>
+                    <ul>
+                        <li>Maximum file size: 2GB per file</li>
+                        <li>Supported file types: All file types</li>
+                        <li>Files are encrypted during transfer and storage</li>
+                        <li>Files are automatically deleted after 7 days</li>
+                    </ul>
+                    <p>Need to upload larger files? Upgrade to premium for more features.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Skyshare. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% csrf_token %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadArea = document.getElementById('upload-area');
+            const browseBtn = document.getElementById('browse-btn');
+            const fileInput = document.getElementById('file-input');
+            const uploadProgress = document.getElementById('upload-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const fileList = document.getElementById('file-list');
+            const shareCode = document.getElementById('share-code');
+            const codeDisplay = document.getElementById('code-display');
+
+            // Handle drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.classList.add('dragover');
+            }
+
+            function unhighlight() {
+                uploadArea.classList.remove('dragover');
+            }
+
+            // Handle file drop
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+
+            // Handle file browse
+            browseBtn.addEventListener('click', function () {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function () {
+                handleFiles(this.files);
+            });
+
+            // Process the selected files
+            function handleFiles(files) {
+                if (files.length === 0) return;
+
+                // Show progress
+                uploadProgress.style.display = 'block';
+
+                // Convert FileList to Array for easier manipulation
+                const filesArray = Array.from(files);
+
+                // Simulate upload progress
+                simulateUpload(filesArray);
+            }
+
+            // Add a file to the list
+            function addFileToList(file) {
+                // Show file list if it's hidden
+                fileList.style.display = 'block';
+
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-item-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <div class="file-item-info">
+                        <div class="file-item-name">${file.name}</div>
+                        <div class="file-item-size">${formatFileSize(file.size)}</div>
+                    </div>
+                    <div class="file-item-status">Pending</div>
+                `;
+
+                fileList.appendChild(fileItem);
+                return fileItem;
+            }
+
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Generate random 6-digit code
+            function generateCode() {
+                return Math.floor(100000 + Math.random() * 900000).toString();
+            }
+
+            // Simulate file upload
+            // Upload file to backend
+            function simulateUpload(files) {
+                if (files.length === 0) return;
+                const file = files[0];
+                addFileToList(file);
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                const xhr = new XMLHttpRequest();
+
+                xhr.open('POST', '{% url "api_upload" %}', true);
+                xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+                xhr.upload.onprogress = function (e) {
+                    if (e.lengthComputable) {
+                        const progress = (e.loaded / e.total) * 100;
+                        progressBar.style.width = progress + '%';
+                        progressPercentage.textContent = Math.round(progress) + '%';
+                    }
+                };
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            // Update file statuses
+                            const fileItems = document.querySelectorAll('.file-item');
+                            fileItems.forEach((item) => {
+                                const statusElement = item.querySelector('.file-item-status');
+                                statusElement.textContent = 'Uploaded';
+                                statusElement.className = 'file-item-status status-success';
+                            });
+
+                            // Display share code
+                            codeDisplay.textContent = response.code;
+                            shareCode.style.display = 'block';
+
+                            // Reset input
+                            fileInput.value = '';
+                        } else {
+                            alert('Upload failed: ' + response.error);
+                        }
+                    } else {
+                        alert('Upload failed. Status: ' + xhr.status);
+                    }
+                };
+
+                xhr.onerror = function () {
+                    alert('Network error during upload.');
+                };
+
+                xhr.send(formData);
+            }
+        });
+    </script>
+</body>
+
+</html>

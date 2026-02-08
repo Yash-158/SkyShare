@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download File - Skyshare</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --background: #ffffff;
+            --foreground: #111827;
+            --muted: #6b7280;
+            --muted-background: #f3f4f6;
+            --border: #e5e7eb;
+            --radius: 0.5rem;
+            --error: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--muted-background);
+            color: var(--foreground);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--background);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 4rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo svg {
+            width: 1.75rem;
+            height: 1.75rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--foreground);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--muted-background);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 0;
+        }
+
+        .download-container {
+            background-color: var(--background);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .download-header {
+            margin-bottom: 2rem;
+        }
+
+        .download-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-subtitle {
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        .download-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            color: var(--primary);
+        }
+
+        .code-input-container {
+            margin-bottom: 2rem;
+        }
+
+        .code-input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+
+        .code-input {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .code-input input {
+            width: 3rem;
+            height: 3rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: border-color 0.2s ease;
+        }
+
+        .code-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .download-button {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-download:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-download svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .download-progress {
+            height: 8px;
+            width: 100%;
+            background-color: var(--muted-background);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .download-status {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--muted);
+            display: none;
+        }
+
+        .download-info {
+            background-color: var(--muted-background);
+            border-radius: var(--radius);
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: var(--muted);
+            text-align: left;
+        }
+
+        .download-info-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .download-info ul {
+            list-style-position: inside;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-info li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--foreground);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 1rem 0;
+            }
+
+            nav ul {
+                margin: 1rem 0;
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .download-container {
+                max-width: 100%;
+                margin: 0 1rem;
+            }
+
+            .code-input input {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="{% url 'home' %}" class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Skyshare
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="download-container">
+            <div class="download-header">
+                <div class="download-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+                <h1 class="download-title">Download File</h1>
+                <p class="download-subtitle">Enter the 6-digit code to retrieve your file</p>
+            </div>
+
+            <div class="code-input-container">
+                <label for="code-1" class="code-input-label">Enter 6-digit code</label>
+                <div class="code-input">
+                    <input type="text" id="code-1" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    <input type="text" id="code-2" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    <input type="text" id="code-3" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    <input type="text" id="code-4" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    <input type="text" id="code-5" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    <input type="text" id="code-6" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                </div>
+            </div>
+
+            <div class="download-button">
+                <button id="download-btn" class="btn-download" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download File
+                </button>
+            </div>
+
+            <div id="download-progress" class="download-progress">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+
+            <div id="download-status" class="download-status">
+                Downloading... <span id="progress-percentage">0%</span>
+            </div>
+
+            <div class="download-info">
+                <h4 class="download-info-title">How it works</h4>
+                <ul>
+                    <li>Enter the 6-digit code provided by the file sender</li>
+                    <li>Click the download button to retrieve your file</li>
+                    <li>Files are available for download for 7 days by default</li>
+                </ul>
+                <p>Need to share files? <a href="{% url 'upload_page' %}">Upload your files</a> to get started.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Skyshare. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const codeInputs = document.querySelectorAll('.code-input input');
+            const downloadBtn = document.getElementById('download-btn');
+            const downloadProgress = document.getElementById('download-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const downloadStatus = document.getElementById('download-status');
+            const progressPercentage = document.getElementById('progress-percentage');
+
+            // Auto-focus and auto-tab for code inputs
+            codeInputs.forEach((input, index) => {
+                // Focus on input when clicked
+                input.addEventListener('click', function () {
+                    this.select();
+                });
+
+                // Handle input
+                input.addEventListener('input', function () {
+                    // Only allow numbers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+
+                    // Auto-tab to next input
+                    if (this.value && index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+
+                    // Check if all inputs are filled
+                    checkInputs();
+                });
+
+                // Handle backspace
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Focus first input on page load
+            codeInputs[0].focus();
+
+            // Check if all inputs are filled
+            function checkInputs() {
+                let allFilled = true;
+                codeInputs.forEach(input => {
+                    if (!input.value) {
+                        allFilled = false;
+                    }
+                });
+
+                downloadBtn.disabled = !allFilled;
+            }
+
+            // Simulate download when button is clicked
+            downloadBtn.addEventListener('click', function () {
+                // Get the code
+                let code = '';
+                codeInputs.forEach(input => {
+                    code += input.value;
+                });
+
+                if (code.length === 6 && /^\d+$/.test(code)) {
+                    window.location.href = `/download/${code}/`;
+                } else {
+                    alert('Please enter a valid 6-digit code.');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

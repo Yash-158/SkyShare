@@ -1,0 +1,25 @@
+<!-- templates/accounts/dashboard.html -->
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Dashboard</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Welcome, {{ user.username }}!</h5>
+        <p class="card-text">You are logged in successfully. Your email address is {{ user.email }}.</p>
+        <hr>
+        <h6>Account Information</h6>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item">Username: {{ user.username }}</li>
+            <li class="list-group-item">Email: {{ user.email }}</li>
+            <li class="list-group-item">Email Verified: {% if user.email_verified %}Yes{% else %}No{% endif %}</li>
+            <li class="list-group-item">Date Joined: {{ user.date_joined|date:"F j, Y" }}</li>
+        </ul>
+        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+{% endblock %}
