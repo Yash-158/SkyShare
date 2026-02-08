@@ -1,7 +1,7 @@
 # SkyShare
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=SkyShare+Dashboard" alt="SkyShare Dashboard" width="100%" />
+  <img src="Images\SkyShare1.png" alt="SkyShare Dashboard" width="100%" />
 </div>
 
 ## Share Files Instantly, Securely, and Without Friction.
@@ -72,7 +72,7 @@ The `is_expired()` checks against the current server time to prevent access to s
 
 | Upload Page | Download Page |
 | :---: | :---: |
-| <img src="https://via.placeholder.com/400x300.png?text=Upload+Page" alt="Upload Page" /> | <img src="https://via.placeholder.com/400x300.png?text=Download+Page" alt="Download Page" /> |
+| <img src="Images\SkyShare2.png" alt="Upload Page" /> | <img src="Images\SkyShare3.png" /> |
 
 ---
 
