@@ -120,6 +120,3 @@ Get SkyShare running locally in minutes.
     Open your browser and navigate to `http://127.0.0.1:8000`.
 
 
-<div align="center">
-  Built with ❤️ by [Your Name]
-</div>
